@@ -1,0 +1,3 @@
+# vinf-elastic
+
+npm install
