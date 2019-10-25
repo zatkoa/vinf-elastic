@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Search</title>
+
+    <link rel="stylesheet" href="node_modules/materialize-css/dist/css/materialize.min.css">
+    <link rel="stylesheet" href="node_modules/materialize-css/extras/noUiSlider/nouislider.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="node_modules/angular/angular-csp.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script type="text/javascript" src="node_modules/angular/angular.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="js/app.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper">
+            <h1>Search glasses</h1>
+        </div>
+    </nav>
+
+    <div class="container" ng-controller="MainController" ng-cloak>
+
+        <div class="row">
+            <div class="col s12">
+              <div class="row">
+                <div class="input-field col s12">
+                  <i class="material-icons prefix">search</i>
+                  <input type="text" id="autocomplete-input" class="autocomplete" ng-model="searchTerm" ng-change="getAutocomplete()">
+                  <label for="autocomplete-input">Search term</label>
+                </div>
+
+                <div class="col s3">
+                    <p>
+                        <label>
+                            <input type="checkbox" ng-model="searchAsPhrase">
+                            <span>Search as phrase</span>
+                        </label>
+                    </p>
+                </div>
+
+                <div class="col s3">
+                    <p>
+                        <label>
+                            <input type="checkbox" ng-model="fuzzyQuery">
+                            <span>Fuzzy search</span>
+                        </label>
+                    </p>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s5 d-flex flex-column">
+                <label>Price range:</label>
+                <div id="slider"></div>
+            </div>
+
+            <div class="col s2 flex-column"></div>
+
+            <div class="input-field col s5">
+                <select ng-model="size">
+                    <option value="" disabled selected>Choose your size</option>
+                    <option value="ALL" >ALL</option>
+                    <option ng-repeat="size in sizes" value="{{ size.key }}">{{ size.key }}</option>
+                </select>
+                <label>Size:</label>
+            </div>
+            
+        </div>
+
+        <div class="row">
+            <div class="col s6">
+                <p>
+                    <label>
+                        <input type="checkbox" class="filled-in" checked="checked" ng-model="sortByPrice"/>
+                        <span>Sort by price</span>
+                    </label>
+                </p>
+            </div>  
+
+            <div class="col s6">
+                <button ng-click="getResults(true)" class="btn waves-effect waves-light" type="submit" name="action">Search
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>  
+        </div>
+
+        <hr>
+        <div class="results-wrapper">
+            <div class="results">
+                <div ng-repeat="result in results.hits.hits" class="result">
+                    <div class="row">
+                        <div class="col s3">
+                            <img class="item-img" src="{{ result._source.images[0] }}">
+                        </div>
+
+                        <div class="col s9">
+                            <h5 class="title"><span  ng-if="result.highlight.model === undefined">{{ result._source.model }}</span><span ng-if="result.highlight.model" ng-bind-html="result.highlight.model[0]"></span>
+                                 | <span  ng-if="result.highlight.brand === undefined">{{ result._source.brand }}</span><span ng-if="result.highlight.brand" ng-bind-html="result.highlight.brand[0]"></span></h5>
+                            <span class="price">{{ result._source.price }} &euro;</span>
+                            <span ng-bind-html="result.highlight.description[0]"></span><br>
+                            <span><a href="{{ result._source.url }}">{{ result._source.url }}</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+              <span>Number of results: {{ results.hits.total.value }}</span>
+              <br>
+              <span ng-if="results.hits.total.value > 0">{{ (currentPage - 1) * numPerPage }} - {{ currentPage * numPerPage > results.hits.total.value ? results.hits.total.value : currentPage * numPerPage }} results</span>
+
+              <ul class="pagination" ng-if="maxPages > 1">
+                <li ng-class="currentPage === 1 ? 'disabled' : 'waves-effect'" ng-click=previousPage()><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                <li ng-class="currentPage >= maxPages ? 'disabled' : 'waves-effect'" ng-click=nextPage()><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+              </ul>
+        </div>
+        <hr>
+    </div>
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="node_modules/materialize-css/dist/js/materialize.min.js"></script>
+    <script type="text/javascript" src="node_modules/materialize-css/extras/noUiSlider/nouislider.min.js"></script>
+
+
+    <script>
+        var slider = document.getElementById('slider');
+            noUiSlider.create(slider, {
+            start: [0, 1000],
+            connect: true,
+            step: 1,
+            orientation: 'horizontal', // 'horizontal' or 'vertical'
+            range: {
+                'min': 0,
+                'max': 1000
+            },
+            format: wNumb({
+                decimals: 0
+            })
+        });
+
+        var instance;
+        document.addEventListener('DOMContentLoaded', function() {
+            var elem = document.querySelector('.autocomplete');
+            M.Autocomplete.init(elem);
+            instance = M.Autocomplete.getInstance(elem);
+        });
+    </script>
+</body>
+</html>

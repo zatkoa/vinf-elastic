@@ -1,0 +1,46 @@
+h1 {
+  font-size: 18px;
+  margin: 0; }
+
+nav {
+  margin-bottom: 25px;
+  display: flex; }
+
+.nav-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: 15px; }
+
+label {
+  font-size: 1rem; }
+
+#slider {
+  margin-top: 15px; }
+
+button {
+  float: right; }
+
+hr {
+  opacity: 0.3;
+  margin: 25px 0px; }
+
+.results .result {
+  margin: 30px;
+  position: relative; }
+
+.item-img {
+  width: 100%; }
+
+.price {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 24px;
+  font-weight: bold; }
+
+.title {
+  margin-bottom: 16px; }
+
+em {
+  font-weight: bold; }
