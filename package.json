@@ -4,7 +4,7 @@
     "angular-sanitize": "^1.7.8",
     "angularjs": "0.0.1",
     "materialize-css": "^1.0.0-rc.2",
-    "node-sass": "^4.12.0"
+    "node-sass": "^7.0.0"
   },
   "scripts": {
     "scss": "node-sass --watch scss -o css"
